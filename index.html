@@ -58,7 +58,8 @@ svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 @keyframes pl{0%{box-shadow:0 0 0 0 #fffa}70%{box-shadow:0 0 0 18px #fff0}100%{box-shadow:0 0 0 0 #fff0}}
 #gear{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:15;width:64px;height:64px;border-radius:50%;padding:0;background:linear-gradient(#fbbf24,#f97316);border:4px solid #fff;box-shadow:0 5px 0 #c2410c,0 8px 16px #0004;display:flex;align-items:center;justify-content:center}
 #gear svg{width:38px;height:38px;fill:#fff;filter:drop-shadow(0 2px 1px #0005)}
-</style></head><body>
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head><body>
 <div id="home"><div id="hbg"></div><div class="stage"><img id="cv" alt="เกมบันไดงู ท้าทายความรู้สู่ชัยชนะ"><button id="hs" aria-label="เริ่มเกม"></button></div>
 <button id="gear" aria-label="ตั้งค่า" title="ตั้งค่า (ครู/แอดมิน)"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button></div>
 <div id="menu" class="hide"><div class="card">
@@ -90,7 +91,8 @@ svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 <small>ใน Sheets ใส่คอลัมน์ตามลำดับ: <b>คำถาม | ตัวเลือก ก | ข | ค | ง | เฉลย</b> (เฉลยใส่ ก/ข/ค/ง หรือ 1–4) แล้วคัดลอกเซลล์ทั้งหมดมาวางด้านล่าง หรือเลือก ไฟล์ › ดาวน์โหลด › CSV แล้วอัปโหลดไฟล์ (แถวหัวตารางใส่หรือไม่ใส่ก็ได้)</small>
 <input id="in" placeholder="ชื่อชุดคำถามที่นำเข้า" style="margin-top:6px">
 <textarea id="ip" rows="4" placeholder="วางข้อมูลที่คัดลอกจาก Google Sheets ที่นี่" style="width:100%;font:inherit;border-radius:10px;border:2px solid var(--line);padding:8px;margin-top:6px;background:#fff;color:#2b2350"></textarea>
-<input type="file" id="if" accept=".csv,.tsv,.txt" style="margin:6px 0">
+<div><small>📎 เลือกไฟล์ Excel (.xlsx / .xls) หรือ CSV จากเครื่อง ใช้ได้ทั้งคอมพิวเตอร์และ iPad (อ่านจากชีตแรกของไฟล์)</small></div>
+<input type="file" id="if" accept=".xlsx,.xls,.csv,.tsv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="margin:6px 0">
 <button id="imp" style="background:#22c55e;box-shadow:0 4px 0 #15803d">📥 นำเข้า</button>
 <div style="display:flex;gap:8px;margin-top:8px"><select id="tb"></select><button id="imt" style="background:#0ea5e9;box-shadow:0 4px 0 #0369a1;white-space:nowrap">📄 นำเข้าจากแท็บในชีต</button></div>
 <h3>⏳ เวลาตอบคำถามต่อข้อ</h3><div class="chips" id="aT"></div>
@@ -198,11 +200,14 @@ function parseRows(t){t=t.replace(/^\uFEFF/,'');const d=t.split('\n')[0].include
 for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"'&&c==='')q=true;else if(ch==d){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';rows.push(r);r=[]}else c+=ch}
 if(c!==''||r.length){r.push(c);rows.push(r)}return rows}
 function ans(x,o){x=(x||'').trim().toLowerCase().replace(/[.)]/g,'');const m={'ก':0,'ข':1,'ค':2,'ง':3,a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};if(m[x]!==undefined)return m[x];return o.findIndex(s=>s.trim().toLowerCase()==x)}
-function doImport(txt){const name=$('#in').value.trim()||window.IMPNAME||'';if(!name)return alert('กรุณาตั้งชื่อชุดคำถาม');const qs=[],bad=[];
-parseRows(txt).forEach((r,i)=>{r=r.map(x=>x.trim());if(r.every(x=>!x))return;if(r.length<6){if(i)bad.push(i+1);return}const o=r.slice(1,5),c=ans(r[5],o);if(!r[0]||o.some(x=>!x)||c<0){if(i)bad.push(i+1);return}qs.push({q:r[0],o,c})});
+function doImport(txt,rows){const name=$('#in').value.trim()||window.IMPNAME||'';if(!name)return alert('กรุณาตั้งชื่อชุดคำถาม');const qs=[],bad=[];
+(rows||parseRows(txt)).forEach((r,i)=>{r=r.map(x=>x.trim());if(r.every(x=>!x))return;if(r.length<6){if(i)bad.push(i+1);return}const o=r.slice(1,5),c=ans(r[5],o);if(!r[0]||o.some(x=>!x)||c<0){if(i)bad.push(i+1);return}qs.push({q:r[0],o,c})});
 if(!qs.length)return alert('ไม่พบคำถามที่ถูกต้อง ตรวจสอบลำดับคอลัมน์อีกครั้ง');
 addSet(name,qs,()=>{$('#ip').value='';$('#in').value='';toast('📥 นำเข้า '+qs.length+' ข้อ'+(bad.length?' (ข้ามแถว '+bad.join(', ')+')':''))})}
-$('#imp').onclick=()=>{const f=$('#if').files[0];window.IMPNAME=f&&!$('#ip').value.trim()?f.name.replace(/\.[^.]+$/,''):'';if($('#ip').value.trim())doImport($('#ip').value);else if(f){const rd=new FileReader();rd.onload=()=>{doImport(rd.result);$('#if').value=''};rd.readAsText(f)}else alert('วางข้อมูลหรือเลือกไฟล์ก่อน')};
+$('#imp').onclick=()=>{const f=$('#if').files[0];window.IMPNAME=f&&!$('#ip').value.trim()?f.name.replace(/\.[^.]+$/,''):'';if($('#ip').value.trim())doImport($('#ip').value);else if(f){const rd=new FileReader(),xl=/\.xlsx?$/i.test(f.name);
+if(xl){if(typeof XLSX==='undefined')return alert('โหลดตัวอ่าน Excel ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
+rd.onload=()=>{try{const wb=XLSX.read(rd.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});doImport('',rows)}catch(e){alert('อ่านไฟล์ Excel ไม่ได้: '+e.message)}$('#if').value=''};rd.readAsArrayBuffer(f)}
+else{rd.onload=()=>{doImport(rd.result);$('#if').value=''};rd.readAsText(f)}}else alert('วางข้อมูลหรือเลือกไฟล์ก่อน')};
 menu();
 function openAdmin(){$('#am').classList.remove('hide');aList();gs('listTabs',AUTH).then(t=>{$('#tb').innerHTML=t.map(n=>`<option>${n}</option>`).join('')||'<option value="">(ไม่มีแท็บ)</option>'}).catch(()=>{})}
 $('#imt').onclick=()=>{const tab=$('#tb').value;if(!tab)return alert('เลือกแท็บก่อน');gs('importFromTab',AUTH,tab).then(r=>{const name=$('#in').value.trim()||tab;if(!r.qs.length)return alert('ไม่พบคำถามที่ถูกต้องในแท็บนี้');addSet(name,r.qs,()=>{$('#in').value='';toast('📥 นำเข้า '+r.qs.length+' ข้อ'+(r.bad.length?' (ข้ามแถว '+r.bad.join(', ')+')':''))})}).catch(err)};
