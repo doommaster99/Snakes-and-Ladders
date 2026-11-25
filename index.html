@@ -2,13 +2,13 @@
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>เกมบันไดงู</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#2b2350;--panel:#ffffffee;--line:#e5defa;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#fff;--panel:#2a2058ee;--line:#4a3d8f}}
 :root[data-theme="dark"]{--ink:#fff;--panel:#2a2058ee;--line:#4a3d8f}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
-body{font-family:Kanit,system-ui,sans-serif;color:var(--ink);background:linear-gradient(135deg,#38bdf8,#a78bfa 55%,#f9a8d4) fixed;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+body{font-family:Sarabun,system-ui,sans-serif;color:var(--ink);background:linear-gradient(135deg,#38bdf8,#a78bfa 55%,#f9a8d4) fixed;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:10px 16px;font-weight:600;color:#fff;background:#8b5cf6;box-shadow:0 4px 0 #5b21b6}
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #5b21b6}
 .card{background:var(--panel);border-radius:22px;padding:16px;box-shadow:0 8px 24px #0003}
@@ -58,34 +58,57 @@ svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 @keyframes pl{0%{box-shadow:0 0 0 0 #fffa}70%{box-shadow:0 0 0 18px #fff0}100%{box-shadow:0 0 0 0 #fff0}}
 #gear{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:15;width:64px;height:64px;border-radius:50%;padding:0;background:linear-gradient(#fbbf24,#f97316);border:4px solid #fff;box-shadow:0 5px 0 #c2410c,0 8px 16px #0004;display:flex;align-items:center;justify-content:center}
 #gear svg{width:38px;height:38px;fill:#fff;filter:drop-shadow(0 2px 1px #0005)}
+body{background:linear-gradient(135deg,#4f46e5,#7c3aed 45%,#06b6d4) fixed}
+button{background:linear-gradient(180deg,#818cf8,#4f46e5);box-shadow:0 4px 0 #3730a3,0 8px 14px #0003}
+.big{background:linear-gradient(180deg,#34d399,#16a34a);box-shadow:0 4px 0 #166534,0 8px 14px #0003}
+#rollb{background:linear-gradient(180deg,#fbbf24,#f97316);box-shadow:0 5px 0 #c2410c,0 10px 16px #0003}
+.card{background:#ffffffeb}
+.board{width:min(calc(100vw - 24px - min(340px,30vw) - 14px),calc((100vh - 28px)*1.875));aspect-ratio:15/8;border:10px solid #8b5a2b;border-radius:24px;box-shadow:0 20px 34px #0007,inset 0 0 0 3px #d9a35f;background:#fff}
+.grid{grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(8,1fr)}
+.c{font-size:clamp(8px,1.05vw,14px);box-shadow:inset 0 -4px 0 #0002,inset 0 3px 0 #fff9;border-radius:6px;margin:1px}
+.c.a{background:#fde68a}.c.b{background:#a7f3d0}.c.q{background:#fbcfe8}
+.c.q::after{font-size:clamp(12px,2.2vw,28px)}
+.tk{width:4.4%;border:2px solid #fff9;box-shadow:0 5px 6px #0007,inset 0 -4px 6px #0005;font-size:clamp(10px,1.8vw,24px)}
+.side{width:min(340px,30vw)}
+#dwrap{perspective:600px;width:80px;height:80px;margin:18px auto 22px}
+#tilt,#cube{position:relative;width:80px;height:80px;transform-style:preserve-3d}
+#tilt{transform:rotateX(-22deg) rotateY(-28deg)}
+.f{position:absolute;inset:0;display:grid;grid:repeat(3,1fr)/repeat(3,1fr);padding:11px;border-radius:14px;background:linear-gradient(135deg,#fff,#d1d5db);box-shadow:inset 0 0 14px #0004}
+.f i{display:block;width:15px;height:15px;border-radius:50%;place-self:center}
+.f i.p{background:radial-gradient(circle at 35% 30%,#555,#000);box-shadow:inset 0 -2px 3px #fff3}
+.f i.p.r{background:radial-gradient(circle at 35% 30%,#f87171,#b91c1c)}
+@media(orientation:portrait){.board{width:96vw}.side{width:min(96vw,640px)}}
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={corePlugins:{preflight:false}}</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
 </head><body>
 <div id="home"><div id="hbg"></div><div class="stage"><img id="cv" alt="เกมบันไดงู ท้าทายความรู้สู่ชัยชนะ"><button id="hs" aria-label="เริ่มเกม"></button></div>
 <button id="gear" aria-label="ตั้งค่า" title="ตั้งค่า (ครู/แอดมิน)"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button></div>
-<div id="menu" class="hide"><div class="card">
+<div id="menu" class="hide"><div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70">
 <h1>🎲 เกมบันไดงู 🐍</h1>
 <h3>จำนวนผู้เล่น</h3><div class="chips" id="cN"></div>
 <h3>ชื่อผู้เล่น</h3><div class="nms" id="nms"></div>
 <h3>โหมดการแข่งขัน</h3><div class="chips" id="cM"></div>
 <h3>ชุดคำถาม (ช่อง ❓)</h3><select id="selS"></select>
 <button class="big" id="go">▶ เริ่มเกม</button>
-<button class="big" id="adm" style="background:#0ea5e9;box-shadow:0 4px 0 #0369a1;font-size:18px">📚 จัดการคำถาม (ครู/แอดมิน)</button>
-<button class="big" id="hm" style="background:#64748b;box-shadow:0 4px 0 #334155;font-size:18px">🏠 กลับหน้าแรก</button>
+<button class="bg-gradient-to-b from-sky-400 to-blue-600 shadow-[0_4px_0_rgba(0,0,0,.28)] big" id="adm" style="font-size:18px">📚 จัดการคำถาม (ครู/แอดมิน)</button>
+<button class="bg-gradient-to-b from-slate-400 to-slate-600 shadow-[0_4px_0_rgba(0,0,0,.28)] big" id="hm" style="font-size:18px">🏠 กลับหน้าแรก</button>
 </div></div>
 
 <div id="game" class="hide">
-<div class="board" id="bd"><div class="grid" id="gr"></div><svg class="ov" id="sv" viewBox="0 0 100 100"></svg></div>
+<div class="board" id="bd"><div class="grid" id="gr"></div><svg class="ov" id="sv" viewBox="0 0 150 80" preserveAspectRatio="none"></svg></div>
 <div class="side">
-<div class="card"><div id="tm" class="hide"></div><div id="pls"></div></div>
-<div class="card"><div id="dice">🎲</div><button id="rollb">🎲 ทอยลูกเต๋า</button></div>
-<div class="card"><div id="log"></div></div>
-<button id="back" style="background:#64748b;box-shadow:0 4px 0 #334155">⬅ หน้าแรก</button>
+<div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70"><div id="tm" class="hide"></div><div id="pls"></div></div>
+<div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70"><div id="dwrap"><div id="tilt"><div id="cube"></div></div></div><button id="rollb">🎲 ทอยลูกเต๋า</button></div>
+<div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70"><div id="log"></div></div>
+<button id="back"  class="bg-gradient-to-b from-slate-400 to-slate-600 shadow-[0_4px_0_rgba(0,0,0,.28)]">⬅ หน้าแรก</button>
 </div></div>
 
-<div id="qm" class="ov2 hide"><div class="card"><div id="qtm" style="font-size:36px;font-weight:800;text-align:center;color:#ef4444">⏳ 15</div><h2 id="qt" style="margin-top:0">❓</h2><div id="qo"></div></div></div>
-<div id="rm" class="ov2 hide"><div class="card" style="text-align:center"><div id="rt"></div>
-<button class="big" id="again">🔁 เล่นอีกครั้ง</button><button class="big" id="tomenu" style="background:#64748b;box-shadow:0 4px 0 #334155;font-size:18px">🏠 หน้าแรก</button></div></div>
-<div id="am" class="ov2 hide"><div class="card">
+<div id="qm" class="ov2 hide"><div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70"><div id="qtm" style="font-size:36px;font-weight:800;text-align:center;color:#ef4444">⏳ 15</div><h2 id="qt" style="margin-top:0">❓</h2><div id="qo"></div></div></div>
+<div id="rm" class="ov2 hide"><div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70" style="text-align:center"><div id="rt"></div>
+<button class="big" id="again">🔁 เล่นอีกครั้ง</button><button class="bg-gradient-to-b from-slate-400 to-slate-600 shadow-[0_4px_0_rgba(0,0,0,.28)] big" id="tomenu" style="font-size:18px">🏠 หน้าแรก</button></div></div>
+<div id="am" class="ov2 hide"><div class="card rounded-3xl shadow-2xl backdrop-blur-md ring-1 ring-white/70">
 <h2 style="margin-top:0">⚙️ จัดการชุดคำถาม</h2><div id="al"></div>
 <h3>📥 นำเข้าจาก Google Sheets</h3>
 <small>ใน Sheets ใส่คอลัมน์ตามลำดับ: <b>คำถาม | ตัวเลือก ก | ข | ค | ง | เฉลย</b> (เฉลยใส่ ก/ข/ค/ง หรือ 1–4) แล้วคัดลอกเซลล์ทั้งหมดมาวางด้านล่าง หรือเลือก ไฟล์ › ดาวน์โหลด › CSV แล้วอัปโหลดไฟล์ (แถวหัวตารางใส่หรือไม่ใส่ก็ได้)</small>
@@ -93,22 +116,23 @@ svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 <textarea id="ip" rows="4" placeholder="วางข้อมูลที่คัดลอกจาก Google Sheets ที่นี่" style="width:100%;font:inherit;border-radius:10px;border:2px solid var(--line);padding:8px;margin-top:6px;background:#fff;color:#2b2350"></textarea>
 <div><small>📎 เลือกไฟล์ Excel (.xlsx / .xls) หรือ CSV จากเครื่อง ใช้ได้ทั้งคอมพิวเตอร์และ iPad (อ่านจากชีตแรกของไฟล์)</small></div>
 <input type="file" id="if" accept=".xlsx,.xls,.csv,.tsv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="margin:6px 0">
-<button id="imp" style="background:#22c55e;box-shadow:0 4px 0 #15803d">📥 นำเข้า</button>
-<div style="display:flex;gap:8px;margin-top:8px"><select id="tb"></select><button id="imt" style="background:#0ea5e9;box-shadow:0 4px 0 #0369a1;white-space:nowrap">📄 นำเข้าจากแท็บในชีต</button></div>
+<button id="imp"  class="bg-gradient-to-b from-emerald-400 to-green-600 shadow-[0_4px_0_rgba(0,0,0,.28)]">📥 นำเข้า</button>
+<div style="display:flex;gap:8px;margin-top:8px"><select id="tb"></select><button id="imt" style="white-space:nowrap" class="bg-gradient-to-b from-sky-400 to-blue-600 shadow-[0_4px_0_rgba(0,0,0,.28)]">📄 นำเข้าจากแท็บในชีต</button></div>
 <h3>⏳ เวลาตอบคำถามต่อข้อ</h3><div class="chips" id="aT"></div>
 <h3>สร้างชุดใหม่</h3>
 <input id="an" placeholder="ชื่อชุดคำถาม เช่น วิทยาศาสตร์ ป.5">
 <div class="chips" id="aN" style="margin:8px 0"></div>
-<button id="mk" style="background:#0ea5e9;box-shadow:0 4px 0 #0369a1">สร้างแบบฟอร์ม</button>
+<button id="mk"  class="bg-gradient-to-b from-sky-400 to-blue-600 shadow-[0_4px_0_rgba(0,0,0,.28)]">สร้างแบบฟอร์ม</button>
 <div id="af"></div>
-<div style="display:flex;gap:8px;margin-top:10px"><button id="sv2" class="hide" style="background:#22c55e;box-shadow:0 4px 0 #15803d">💾 บันทึกชุดคำถาม</button><button id="cl" style="background:#64748b;box-shadow:0 4px 0 #334155">ปิด</button></div>
+<div style="display:flex;gap:8px;margin-top:10px"><button id="sv2" class="bg-gradient-to-b from-emerald-400 to-green-600 shadow-[0_4px_0_rgba(0,0,0,.28)] hide" >💾 บันทึกชุดคำถาม</button><button id="cl"  class="bg-gradient-to-b from-slate-400 to-slate-600 shadow-[0_4px_0_rgba(0,0,0,.28)]">ปิด</button></div>
 </div></div>
 
 <div id="toast" style="opacity:0"></div>
 
 <script>
+const Sw=Swal.mixin({heightAuto:false,scrollbarPadding:false,confirmButtonText:'ตกลง',confirmButtonColor:'#6366f1'});window.alert=m=>Sw.fire({icon:'warning',text:String(m)});
 const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=n=>Math.floor(Math.random()*n);
-const LAD={4:25,13:46,27:53,33:67,50:69,62:81,74:92},SNK={99:41,89:51,76:36,66:24,54:19,43:17,31:9},QZ=[7,16,21,29,39,45,57,64,71,83,94];
+const LAD={5:27,12:34,21:45,36:58,49:71,63:85,78:101,90:112},SNK={117:74,108:66,99:53,93:61,82:40,70:29,55:18,44:9},QZ=[8,16,24,31,38,47,52,60,68,76,87,96,105,114],COLS=15,ROWS=8,N=COLS*ROWS;
 const COL=['#ef4444','#3b82f6','#22c55e','#f59e0b'],EMO=['🐯','🐼','🐸','🦊'],F=['⚀','⚁','⚂','⚃','⚄','⚅'],SC=['#16a34a','#dc2626','#7c3aed','#0891b2','#ea580c','#db2777','#65a30d'];
 const DEF={id:'default',name:'ความรู้ทั่วไป',qs:[
 ['เมืองหลวงของประเทศไทยคือ?','กรุงเทพมหานคร','เชียงใหม่','ภูเก็ต','ขอนแก่น'],
@@ -126,14 +150,15 @@ const err=e=>alert((e&&e.message)||e);
 function addSet(name,qs,after){const s={id:'s'+Date.now(),name,qs};toast('กำลังบันทึก…');gs('saveSet',AUTH,s).then(()=>{sets.push(s);aList();menu();after&&after()}).catch(err)}
 let sets=[DEF],AUTH=null,cfg={n:2,mode:0,set:'default'},S=null,tmr=null,aN=5,QSEC=15;
 
-function xy(n){const r=Math.floor((n-1)/10);let c=(n-1)%10;if(r%2)c=9-c;return[(c+.5)*10,(9-r+.5)*10]}
+function xy(n){const r=Math.floor((n-1)/COLS);let c=(n-1)%COLS;if(r%2)c=COLS-1-c;return[(c+.5)*10,(ROWS-1-r+.5)*10]}
 // ---- board
-(function(){let h='';for(let r=9;r>=0;r--)for(let c=0;c<10;c++){const n=r*10+(r%2?10-c:c+1);h+=`<div class="c ${QZ.includes(n)?'q':(r+c)%2?'a':'b'}">${n}</div>`}$('#gr').innerHTML=h;
-let s='';Object.entries(LAD).forEach(([a,b])=>{const[x1,y1]=xy(+a),[x2,y2]=xy(b),dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),nx=-dy/L*1.3,ny=dx/L*1.3;
-s+=`<g stroke="#92400e" stroke-linecap="round"><line x1="${x1+nx}" y1="${y1+ny}" x2="${x2+nx}" y2="${y2+ny}" stroke-width="1"/><line x1="${x1-nx}" y1="${y1-ny}" x2="${x2-nx}" y2="${y2-ny}" stroke-width="1"/>`;
-for(let t=.08;t<.95;t+=Math.min(.5,5/L))s+=`<line x1="${x1+dx*t+nx}" y1="${y1+dy*t+ny}" x2="${x1+dx*t-nx}" y2="${y1+dy*t-ny}" stroke-width=".8"/>`;s+='</g>'});
-Object.entries(SNK).forEach(([a,b],i)=>{const[x1,y1]=xy(+a),[x2,y2]=xy(b),dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),nx=-dy/L*7,ny=dx/L*7,col=SC[i%SC.length];
-s+=`<path d="M${x1} ${y1}C${x1+dx*.3+nx} ${y1+dy*.3+ny},${x1+dx*.65-nx} ${y1+dy*.65-ny},${x2} ${y2}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round"/><path d="M${x1} ${y1}C${x1+dx*.3+nx} ${y1+dy*.3+ny},${x1+dx*.65-nx} ${y1+dy*.65-ny},${x2} ${y2}" fill="none" stroke="#fff8" stroke-width=".7" stroke-dasharray="1.2 2" stroke-linecap="round"/><circle cx="${x1}" cy="${y1}" r="2.2" fill="${col}"/><circle cx="${x1-.8}" cy="${y1-.6}" r=".55" fill="#fff"/><circle cx="${x1+.8}" cy="${y1-.6}" r=".55" fill="#fff"/><circle cx="${x1-.8}" cy="${y1-.6}" r=".25"/><circle cx="${x1+.8}" cy="${y1-.6}" r=".25"/>`});
+(function(){let h='';for(let r=ROWS-1;r>=0;r--)for(let c=0;c<COLS;c++){const n=r*COLS+(r%2?COLS-c:c+1);h+=`<div class="c ${QZ.includes(n)?'q':(r+c)%2?'a':'b'}">${n}</div>`}$('#gr').innerHTML=h;
+let s='<defs><filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx=".5" dy=".9" stdDeviation=".6" flood-opacity=".45"/></filter><radialGradient id="hd" cx="35%" cy="30%"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>';
+Object.entries(LAD).forEach(([a,b])=>{const[x1,y1]=xy(+a),[x2,y2]=xy(b),dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),nx=-dy/L*1.4,ny=dx/L*1.4;s+='<g filter="url(#sh)" stroke-linecap="round">';
+for(const[w,col,o]of[[1.5,'#6b3410',0],[.9,'#d9902b',0],[.3,'#fcd9a0',-.25]])s+=`<g stroke="${col}" stroke-width="${w}"><line x1="${x1+nx}" y1="${y1+ny+o}" x2="${x2+nx}" y2="${y2+ny+o}"/><line x1="${x1-nx}" y1="${y1-ny+o}" x2="${x2-nx}" y2="${y2-ny+o}"/></g>`;
+for(let t=.07;t<.96;t+=Math.min(.5,4.5/L))s+=`<line x1="${x1+dx*t+nx}" y1="${y1+dy*t+ny}" x2="${x1+dx*t-nx}" y2="${y1+dy*t-ny}" stroke="#8a4f12" stroke-width="1"/><line x1="${x1+dx*t+nx}" y1="${y1+dy*t+ny-.25}" x2="${x1+dx*t-nx}" y2="${y1+dy*t-ny-.25}" stroke="#f3b45e" stroke-width=".4"/>`;s+='</g>'});
+Object.entries(SNK).forEach(([a,b],i)=>{const[x1,y1]=xy(+a),[x2,y2]=xy(b),dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),nx=-dy/L*7,ny=dx/L*7,col=SC[i%SC.length],d=`M${x1} ${y1}C${x1+dx*.3+nx} ${y1+dy*.3+ny},${x1+dx*.65-nx} ${y1+dy*.65-ny},${x2} ${y2}`;
+s+=`<g filter="url(#sh)" fill="none" stroke-linecap="round"><path d="${d}" stroke="#000" stroke-opacity=".4" stroke-width="3.1"/><path d="${d}" stroke="${col}" stroke-width="2.5"/><path d="${d}" stroke="#fff" stroke-opacity=".28" stroke-width=".8" transform="translate(-.5,-.55)"/><path d="${d}" stroke="#000" stroke-opacity=".22" stroke-width="1.5" stroke-dasharray="1 2.6"/><ellipse cx="${x1}" cy="${y1}" rx="2.9" ry="2.3" fill="${col}" stroke="#0004" stroke-width=".4"/><ellipse cx="${x1}" cy="${y1}" rx="2.9" ry="2.3" fill="url(#hd)" stroke="none"/><circle cx="${x1-1}" cy="${y1-.7}" r=".8" fill="#fff" stroke="none"/><circle cx="${x1+1}" cy="${y1-.7}" r=".8" fill="#fff" stroke="none"/><circle cx="${x1-1}" cy="${y1-.6}" r=".35" fill="#111" stroke="none"/><circle cx="${x1+1}" cy="${y1-.6}" r=".35" fill="#111" stroke="none"/><path d="M${x1} ${y1+2.2}v1.3m0 0l-.6.7m.6-.7l.6.7" stroke="#e11d48" stroke-width=".35"/></g>`});
 $('#sv').innerHTML=s})();
 
 // ---- menu
@@ -143,7 +168,7 @@ chips('#cM',[[0,'🏁 ถึงเส้นชัย'],[1,'⏱ 1 นาที'],
 const old=[...document.querySelectorAll('.nm')].map(e=>e.value);
 $('#nms').innerHTML=Array.from({length:cfg.n},(_,i)=>`<input class="nm" maxlength="14" placeholder="${EMO[i]} ผู้เล่น ${i+1}" value="${old[i]||''}">`).join('');
 $('#selS').innerHTML=sets.map(s=>`<option value="${s.id}" ${s.id==cfg.set?'selected':''}>${s.name} (${s.qs.length} ข้อ)</option>`).join('');$('#selS').onchange=e=>cfg.set=e.target.value}
-function toast(t){const e=$('#toast');e.textContent=t;e.style.opacity=1;clearTimeout(e.t);e.t=setTimeout(()=>e.style.opacity=0,1600)}
+function toast(t){Sw.fire({toast:true,position:'top',title:t,showConfirmButton:false,timer:1700,timerProgressBar:true})}
 function log(t){const l=$('#log');l.innerHTML+=`<div>${t}</div>`;l.scrollTop=1e5}
 
 // ---- game
@@ -154,22 +179,21 @@ const first=[...ps].sort((a,b)=>b.r-a.r);ps=first;
 S={ps,turn:0,busy:false,over:false,set,q:[],t:cfg.mode*60};
 $('#menu').classList.add('hide');$('#game').classList.remove('hide');$('#rm').classList.add('hide');
 $('#bd').querySelectorAll('.tk').forEach(e=>e.remove());
-ps.forEach(p=>{const d=document.createElement('div');d.className='tk';d.style.background=COL[p.i];d.textContent=EMO[p.i];$('#bd').appendChild(d);p.el=d});
+ps.forEach(p=>{const d=document.createElement('div');d.className='tk';d.style.background='radial-gradient(circle at 30% 24%,#fffd,#fff0 36%),radial-gradient(circle at 50% 55%,'+COL[p.i]+',#000a 170%)';d.textContent=EMO[p.i];$('#bd').appendChild(d);p.el=d});
 $('#log').innerHTML='';log('🎲 ทอยหาผู้เริ่ม: '+ps.map(p=>`${p.n} ${Math.floor(p.r)}`).join(', ')+` → <b>${ps[0].n}</b> เริ่มก่อน`);
 place();panel();
 const tm=$('#tm');tm.classList.toggle('hide',!cfg.mode);
 if(cfg.mode){tick();tmr=setInterval(()=>{if(S.over)return;S.t--;tick();if(S.t<=0)finish()},1000)}}
 function tick(){$('#tm').textContent='⏱ '+String(Math.floor(S.t/60)).padStart(2,'0')+':'+String(S.t%60).padStart(2,'0')}
-function place(){S.ps.forEach((p,k)=>{const[x,y]=xy(p.pos),idx=p.i;p.el.style.left=x+(idx%2?1.7:-1.7)+'%';p.el.style.top=y+(idx<2?-1.7:1.7)+'%'});panel()}
+function place(){S.ps.forEach((p,k)=>{const[x,y]=xy(p.pos),idx=p.i;p.el.style.left=x/1.5+(idx%2?1.1:-1.1)+'%';p.el.style.top=y/.8+(idx<2?-2.2:2.2)+'%'});panel()}
 function panel(){$('#pls').innerHTML=S.ps.map((p,k)=>`<div class="pl ${k==S.turn?'on':''}"><span class="dot" style="background:${COL[p.i]}">${EMO[p.i]}</span><span style="flex:1">${p.n}</span><b>ช่อง ${p.pos}</b></div>`).join('');$('#rollb').disabled=S.busy||S.over;$('#rollb').textContent=S.over?'จบเกม':'🎲 '+S.ps[S.turn].n+' ทอยเลย!'}
 async function walk(p,t){const G=S;while(p.pos!==t){if(S!==G||G.over)return;p.pos+=p.pos<t?1:-1;place();await sleep(170)}}
-async function roll(){const G=S;if(G.busy||G.over)return;G.busy=true;panel();const p=G.ps[G.turn],d=$('#dice');
-for(let i=0;i<9;i++){d.textContent=F[rnd(6)];d.classList.toggle('s');await sleep(70)}
-const v=1+rnd(6);d.textContent=F[v-1];d.classList.remove('s');log(`${EMO[p.i]} ${p.n} ทอยได้ <b>${v}</b>`);await sleep(250);
-await walk(p,Math.min(100,p.pos+v));if(S!==G||G.over)return;if(p.pos>=100)return win(p);
+async function roll(){const G=S;if(G.busy||G.over)return;G.busy=true;panel();const p=G.ps[G.turn];
+const v=1+rnd(6);await rollDice(v);log(`${EMO[p.i]} ${p.n} ทอยได้ <b>${v}</b>`);await sleep(250);
+await walk(p,Math.min(N,p.pos+v));if(S!==G||G.over)return;if(p.pos>=N)return win(p);
 if(LAD[p.pos]){toast('🪜 ขึ้นบันได!');log('🪜 ปีนบันไดขึ้นไปช่อง '+LAD[p.pos]);await sleep(400);p.pos=LAD[p.pos];place();await sleep(700)}
 else if(SNK[p.pos]){toast('🐍 โดนงูกัด!');log('🐍 ลื่นลงไปช่อง '+SNK[p.pos]);await sleep(400);p.pos=SNK[p.pos];place();await sleep(700)}
-else if(QZ.includes(p.pos)){const ok=await quiz(),dl=3+rnd(3);if(S!==G||G.over)return;toast(ok?`✅ ถูกต้อง! เดินหน้า ${dl} ช่อง`:`❌ ผิด! ถอยหลัง ${dl} ช่อง`);log(ok?`✅ ตอบถูก +${dl} ช่อง`:`❌ ตอบผิด −${dl} ช่อง`);await sleep(500);await walk(p,Math.max(1,Math.min(100,p.pos+(ok?dl:-dl))));if(S!==G||G.over)return;if(p.pos>=100)return win(p)}
+else if(QZ.includes(p.pos)){const ok=await quiz(),dl=3+rnd(3);if(S!==G||G.over)return;toast(ok?`✅ ถูกต้อง! เดินหน้า ${dl} ช่อง`:`❌ ผิด! ถอยหลัง ${dl} ช่อง`);log(ok?`✅ ตอบถูก +${dl} ช่อง`:`❌ ตอบผิด −${dl} ช่อง`);await sleep(500);await walk(p,Math.max(1,Math.min(N,p.pos+(ok?dl:-dl))));if(S!==G||G.over)return;if(p.pos>=N)return win(p)}
 if(S!==G||G.over)return;G.turn=(G.turn+1)%G.ps.length;G.busy=false;panel()}
 function quiz(){return new Promise(res=>{if(!S.q.length)S.q=[...S.set.qs].sort(()=>Math.random()-.5);const q=S.q.pop();
 const opts=q.o.map((t,i)=>({t,i})).sort(()=>Math.random()-.5);$('#qt').textContent='❓ '+q.q;
@@ -182,12 +206,16 @@ function win(p){S.over=true;clearInterval(tmr);panel();result(`<div style="font-
 function finish(){S.over=true;clearInterval(tmr);$('#qm').classList.add('hide');const r=[...S.ps].sort((a,b)=>b.pos-a.pos),top=r.filter(p=>p.pos==r[0].pos);
 result(`<div style="font-size:70px">⏱🏆</div><h1>${top.length>1?'เสมอกัน! '+top.map(p=>p.n).join(' & '):EMO[top[0].i]+' '+top[0].n+' ชนะ!'}</h1><p>หมดเวลา — อันดับ: ${r.map((p,k)=>`${k+1}. ${p.n} (ช่อง ${p.pos})`).join(' · ')}</p>`);panel()}
 function result(h){$('#rt').innerHTML=h;$('#rm').classList.remove('hide')}
+let rN=0;const TT={1:[0,0],2:[0,-90],3:[-90,0],4:[90,0],5:[0,90],6:[0,180]};
+async function rollDice(v){rN++;const[a,b]=TT[v],c=$('#cube');c.style.transition='transform 1.1s cubic-bezier(.2,.7,.2,1)';c.style.transform=`rotateX(${a+720*rN}deg) rotateY(${b+720*rN}deg)`;await sleep(1200)}
+(function(){const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]},T=['','rotateY(0)','rotateY(90deg)','rotateX(90deg)','rotateX(-90deg)','rotateY(-90deg)','rotateY(180deg)'];
+$('#cube').innerHTML=[1,2,3,4,5,6].map(v=>`<div class="f" style="transform:${T[v]} translateZ(40px)">${[0,1,2,3,4,5,6,7,8].map(i=>P[v].includes(i)?`<i class="p${v==1?' r':''}"></i>`:'<i></i>').join('')}</div>`).join('')})();
 function toMenu(){clearInterval(tmr);if(S)S.over=true;$('#rm').classList.add('hide');$('#qm').classList.add('hide');$('#game').classList.add('hide');$('#home').classList.remove('hide')}
 $('#go').onclick=start;$('#rollb').onclick=roll;$('#again').onclick=start;$('#tomenu').onclick=toMenu;$('#back').onclick=toMenu;
 
 // ---- admin
-function aList(){$('#al').innerHTML=sets.map(s=>`<div class="pl" style="border-bottom:1px solid var(--line)"><span style="flex:1">${s.name} (${s.qs.length} ข้อ)</span>${s.id=='default'?'<small>ค่าเริ่มต้น</small>':`<button data-d="${s.id}" style="background:#ef4444;box-shadow:0 3px 0 #991b1b;padding:4px 12px">ลบ</button>`}</div>`).join('');
-$('#al').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(confirm('ลบชุดคำถามนี้?')){const id=b.dataset.d;gs('deleteSet',AUTH,id).then(()=>{sets=sets.filter(s=>s.id!=id);if(cfg.set==id)cfg.set='default';aList();menu()}).catch(err)}});
+function aList(){$('#al').innerHTML=sets.map(s=>`<div class="pl" style="border-bottom:1px solid var(--line)"><span style="flex:1">${s.name} (${s.qs.length} ข้อ)</span>${s.id=='default'?'<small>ค่าเริ่มต้น</small>':`<button data-d="${s.id}" style="padding:4px 12px" class="bg-gradient-to-b from-rose-400 to-red-600 shadow-[0_4px_0_rgba(0,0,0,.28)]">ลบ</button>`}</div>`).join('');
+$('#al').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{Sw.fire({title:'ลบชุดคำถามนี้?',text:'ลบแล้วกู้คืนไม่ได้',icon:'warning',showCancelButton:true,confirmButtonText:'ลบ',cancelButtonText:'ยกเลิก',confirmButtonColor:'#ef4444'}).then(r=>{if(!r.isConfirmed)return;const id=b.dataset.d;gs('deleteSet',AUTH,id).then(()=>{sets=sets.filter(s=>s.id!=id);if(cfg.set==id)cfg.set='default';aList();menu()}).catch(err)})});
 chips('#aN',[5,10,15,20].map(n=>[n,n+' ข้อ']),()=>aN,v=>{aN=+v;aList()});
 chips('#aT',[10,15,20,30,45,60].map(n=>[n,n+' วินาที']),()=>QSEC,v=>{QSEC=+v;gs('saveSettings',AUTH,QSEC).catch(err);aList()})}
 $('#gear').onclick=()=>{$('#home').classList.add('hide');$('#menu').classList.remove('hide');menu()};
